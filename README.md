@@ -22,3 +22,36 @@ The controller is designed to:
 ## Features
 
 - **Force control within bounds:**
+-1 ≤ uₖ ≤ 1
+
+- **Demand response constraints:**  
+|x₃| ≤ 0.5
+|x₄| ≤ 0.5
+
+markdown
+Copy
+Edit
+
+- **Robustness to time constant variations** in the demand response, achieved via adjustments to the **terminal cost matrix**
+
+## Contributions
+
+- Developed a refined LQ-MPC scheme tailored for uncertain two-mass spring dynamics
+- Analyzed and mitigated the impact of demand time constant variations
+- Maintained performance within strict constraints with rapid stabilization (≤10 steps)
+
+## Applications
+
+This approach is applicable in:
+
+- Smart grid demand-side management
+- Precision robotics and actuators
+- Aerospace docking maneuvers
+- Industrial automation and mechatronics
+
+## Contact
+
+For questions, contributions, or collaborations, feel free to open an issue or reach out via the repository discussion board.
+
+---
+
