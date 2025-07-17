@@ -1,1 +1,1 @@
-# Design-of-Model-Predictive-Control-MPC-for-Wie-Bernstein-two-cart-system
+# Design of Model Predictive Control for Wie Bernstein two cart system
