@@ -1,82 +1,150 @@
-# LQ-MPC for Two-Mass Spring Systems with Uncertain Parameters
+# LQ-MPC Design for Wie–Bernstein Two-Cart System
 
-## Overview
-
-This project implements a **refined Linear Quadratic Model Predictive Controller (LQ-MPC)** for stabilizing a **two-mass spring system** with uncertain parameters. Such systems are important analogs for real-world applications including:
-
-- Coupled-mass systems  
-- Power grids  
-- Spacecraft docking  
-- Interconnected mechanical and electrical systems
-
-These applications require **precise control of interconnected components**, often under uncertainty.
-
-## Objective
-
-The controller is designed to:
-
-- Stabilize the applied force `uₖ`
-- Accommodate **demand response** within **specified state and input constraints**
-- Ensure **fast and stable system response** (under 10 time steps)
-
-## Features
-
-- **Force control within bounds:**
--1 ≤ uₖ ≤ 1
-
-- **Demand response constraints:**  
-|x₃| ≤ 0.5
-|x₄| ≤ 0.5
-
-- **Robustness to time constant variations** in the demand response, achieved via adjustments to the **terminal cost matrix**
-
-## Region of Attraction (RoA)
-
-The **Region of Attraction** refers to the set of initial states from which the LQ-MPC controller guarantees convergence to the desired equilibrium under the given constraints.
-
-- It represents **asymptotic stability** under feedback control.
-- Determined by:
-- The solution to the Riccati equation
-- The terminal cost matrix
-- The linearized system dynamics
-
-**Significance**:  
-Staying within the RoA ensures that the system will return to its equilibrium state without violating any constraints.
+## Author
+**Muzhaffar Maruf Ibrahim**  
+School of Electrical and Electronic Engineering, University of Sheffield
 
 ---
 
-## Region of Feasibility (RoF)
+## 🧠 Abstract
 
-The **Region of Feasibility** is the set of initial conditions for which the MPC optimization problem has a feasible solution that satisfies **all input and state constraints** over the prediction horizon.
+This project presents the design of a **Linear Quadratic Model Predictive Controller (LQ-MPC)** for a **two-cart spring-mass system** with uncertain parameters. This benchmark problem represents real-world systems like power grids, robotic manipulators, and spacecraft docking mechanisms.
 
-- RoF ⊇ RoA in general  
-- Related to:
-- State/input constraints
-- Horizon length
-- System uncertainty
-- Terminal constraints
+The controller:
 
-**Key Insight**:  
-Being inside the RoF ensures a solution exists. Being inside the RoA ensures **stable convergence** as well.
+- Stabilizes applied force `uₖ` within constraints: `-1 ≤ uₖ ≤ 1`
+- Maintains demand responses: `|x₃| ≤ 0.5`, `|x₄| ≤ 0.5`
+- Achieves closed-loop stability in fewer than 10 time steps
+- Ensures robustness against disturbances via optimal terminal cost design
 
 ---
 
-## Visualization
+## 🧾 Problem Statement
 
-Below is a conceptual illustration of the system response and constraint satisfaction for demand and control inputs:
+We consider the Wie–Bernstein two-mass spring system described by the continuous-time state-space model:
 
-![System Behavior with Constraints](assets/927b570a-1315-4ed2-a0e3-e8d1446b331a.png)
+\[
+\dot{x} = A_c x + B_c u + E_c d
+\]
 
-*Figure: The controller limits the applied force `uₖ` within ±1 and keeps demand states `x₃`, `x₄` within ±0.5. The region of attraction lies strictly inside the region of feasibility.*
+where \( x = [x₁, x₂, x₃, x₄]^T \) are positions and velocities of the carts. The system is subject to input and state constraints:
+
+- `|u| ≤ 1`
+- `|x₃| ≤ 0.5`, `|x₄| ≤ 0.5`
 
 ---
 
+## 🎯 Control Objective
 
-## Contributions
+- Track steady-state targets under persistent disturbance
+- Satisfy hard input/state constraints using QP formulation
+- Minimize quadratic cost over a prediction horizon:
+  \[
+  J = \sum_{k=0}^{N-1} (x_k^T Q x_k + u_k^T R u_k) + x_N^T P x_N
+  \]
 
-- Developed a refined LQ-MPC scheme tailored for uncertain two-mass spring dynamics
-- Analyzed and mitigated the impact of demand time constant variations
-- Maintained performance within strict constraints with rapid stabilization (≤10 steps)
+---
 
+## ✅ Constraints
 
+**Input Constraints:**
+\[
+P_u = \begin{bmatrix} -1 \\ 1 \end{bmatrix}, \quad q_u = \begin{bmatrix} 1 \\ 1 \end{bmatrix}
+\]
+
+**State Constraints:**
+\[
+P_x = \begin{bmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 0 & -1
+\end{bmatrix}, \quad
+q_x = \begin{bmatrix}
+0.5 \\
+0.5 \\
+0.5 \\
+0.5
+\end{bmatrix}
+\]
+
+---
+
+## 🌍 Region of Feasibility (RoF)
+
+The **Region of Feasibility** defines all initial states from which the MPC problem yields a feasible solution, satisfying all constraints during prediction.
+
+- Figure below shows feasibility in \(x_3(0)\) vs. \(x_4(0)\) space:
+  
+  ![Region of Feasibility](assets/region_of_feasibility.png)
+
+---
+
+## 🌐 Region of Attraction (RoA)
+
+The **Region of Attraction** is a subset of RoF from which the controller not only produces a feasible trajectory, but also drives the system **asymptotically to the origin**.
+
+- Only states within this region ensure **closed-loop convergence**:
+  
+  ![Region of Attraction](assets/region_of_attraction.png)
+
+---
+
+## 📊 Performance Metrics
+
+| Controller Type         | Cost (J) | ∑uₖ     | Ts (s) | Overshoot (%) |
+|-------------------------|----------|----------|--------|----------------|
+| Unconstrained           | 9.3189   | 132.95   | 5      | 71.17          |
+| Input Constrained       | 20.946   | 47.617   | 5      | 1.54           |
+| Input + State Constrained | 22.347 | 46.631   | 5      | 0.76           |
+
+---
+
+## 📈 Tracking with Disturbance & Reference Changes
+
+Performance under step changes in disturbance/reference:
+
+| Scenario               | Cost (J) | ∑uₖ   | Ts (s) | Overshoot (%) |
+|------------------------|----------|--------|--------|----------------|
+| Offset Tracking        | 7.3865   | 7.3865 | 0.1    | 9.42           |
+| Reference Variation    | 92.369   | 14.16  | 10     | 0              |
+| Disturbance Variation  | 117.57   | 21.94  | 10     | 34.88          |
+
+---
+
+## 📎 Figures
+
+- **Tracking Performance:**
+  ![Tracking MPC](assets/tracking_mpc.png)
+
+- **With Various Disturbances:**
+  ![Disturbance Response](assets/disturbance_response.png)
+
+- **With Various References:**
+  ![Reference Response](assets/reference_response.png)
+
+---
+
+## 🧰 Implementation
+
+The MATLAB code is split by task:
+
+- `mpc_tasks_1_3.m`: Basic and constrained MPC
+- `mpc_tasks_4_5_disturbance.m`: MPC under disturbance
+- `mpc_tasks_4_5_reference.m`: MPC with reference variation
+
+---
+
+## 📚 References
+
+> See full list in the PDF document (e.g., Bryson 1979, Wie & Bernstein 1992, Rossiter 2018, Morari et al. 1989, etc.)
+
+---
+
+## 📩 Contact
+
+*Muzhaffar Maruf Ibrahim*  
+[mmibrahim2@sheffield.ac.uk](mailto:mmibrahim2@sheffield.ac.uk)
+
+---
 
