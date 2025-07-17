@@ -28,10 +28,6 @@ The controller is designed to:
 |x₃| ≤ 0.5
 |x₄| ≤ 0.5
 
-markdown
-Copy
-Edit
-
 - **Robustness to time constant variations** in the demand response, achieved via adjustments to the **terminal cost matrix**
 
 ## Contributions
