@@ -23,9 +23,9 @@ The controller:
 
 We consider the Wie–Bernstein two-mass spring system described by the continuous-time state-space model:
 
-\[
+$$
 \dot{x} = A_c x + B_c u + E_c d
-\]
+$$
 
 where \( x = [x₁, x₂, x₃, x₄]^T \) are positions and velocities of the carts. The system is subject to input and state constraints:
 
