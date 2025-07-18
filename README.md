@@ -39,34 +39,26 @@ where \( x = [x₁, x₂, x₃, x₄]^T \) are positions and velocities of the c
 - Track steady-state targets under persistent disturbance
 - Satisfy hard input/state constraints using QP formulation
 - Minimize quadratic cost over a prediction horizon:
-$$
-J = \sum_{k=0}^{N-1} \left( x_k^\top Q x_k + u_k^\top R u_k \right) + x_N^\top P x_N
-$$
+  
+<p align="center">
+  <img src="https://quicklatex.com/cache3/a6/ql_2924123dd1a7ef32595fa05c9dac4ca6_l3.png" alt="Cost Function">
+</p>
 
 ---
 
 ## ✅ Constraints
 
 **Input Constraints:**
-$$
-P_u = \begin{bmatrix} -1 \\ 1 \end{bmatrix}, \quad q_u = \begin{bmatrix} 1 \\ 1 \end{bmatrix}
-$$
+
+<p align="center">
+  <img src="https://quicklatex.com/cache3/20/ql_911feb4608c8c327be324045a9d69420_l3.png" alt="Cost Function">
+</p>
 
 **State Constraints:**
-$$
-P_x = \begin{bmatrix}
-0 & 0 & 1 & 0 \\
-0 & 0 & -1 & 0 \\
-0 & 0 & 0 & 1 \\
-0 & 0 & 0 & -1
-\end{bmatrix}, \quad
-q_x = \begin{bmatrix}
-0.5 \\
-0.5 \\
-0.5 \\
-0.5
-\end{bmatrix}
-$$
+
+<p align="center">
+  <img src="https://quicklatex.com/cache3/ce/ql_ddb880a5341f81531e4cbed887c3bbce_l3.png" alt="Cost Function">
+</p>
 
 ---
 
@@ -74,9 +66,11 @@ $$
 
 The **Region of Feasibility** defines all initial states from which the MPC problem yields a feasible solution, satisfying all constraints during prediction.
 
-- Figure below shows feasibility in \(x_3(0)\) vs. \(x_4(0)\) space:
+- Figure below shows feasibility in x₃(0) vs. x₄(0) space:
   
-  ![Region of Feasibility](assets/region_of_feasibility.png)
+<p align="center">
+  <img src="RoF.png" alt="Cost Function">
+</p>
 
 ---
 
@@ -86,7 +80,9 @@ The **Region of Attraction** is a subset of RoF from which the controller not on
 
 - Only states within this region ensure **closed-loop convergence**:
   
-  ![Region of Attraction](assets/region_of_attraction.png)
+<p align="center">
+  <img src="RoA.png" alt="Cost Function">
+</p>
 
 ---
 
@@ -115,13 +111,19 @@ Performance under step changes in disturbance/reference:
 ## 📎 Figures
 
 - **Tracking Performance:**
-  ![Tracking MPC](assets/tracking_mpc.png)
+<p align="center">
+  <img src="Task 1.png" alt="Cost Function">
+</p>
 
 - **With Various Disturbances:**
-  ![Disturbance Response](assets/disturbance_response.png)
+<p align="center">
+  <img src="tracking_with_disturbance_2.png" alt="Cost Function">
+</p>
 
 - **With Various References:**
-  ![Reference Response](assets/reference_response.png)
+<p align="center">
+  <img src="tracking_with_reference_2.png" alt="Cost Function">
+</p>
 
 ---
 
