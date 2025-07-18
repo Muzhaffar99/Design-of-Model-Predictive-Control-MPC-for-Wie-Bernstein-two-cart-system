@@ -39,9 +39,9 @@ where \( x = [x₁, x₂, x₃, x₄]^T \) are positions and velocities of the c
 - Track steady-state targets under persistent disturbance
 - Satisfy hard input/state constraints using QP formulation
 - Minimize quadratic cost over a prediction horizon:
-  $$
-  J = \sum_{k=0}^{N-1} (x_k^T Q x_k + u_k^T R u_k) + x_N^T P x_N
-  $$
+$$
+J = \sum_{k=0}^{N-1} \left( x_k^\top Q x_k + u_k^\top R u_k \right) + x_N^\top P x_N
+$$
 
 ---
 
